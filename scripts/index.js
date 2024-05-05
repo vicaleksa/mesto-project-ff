@@ -8,8 +8,6 @@ function addCard(card, deleteCallback) {
 
     cardElement.querySelector('.card__image').setAttribute('src', card.link);
     cardDescription.querySelector('.card__title').textContent = card.name;
-    deleteButton.setAttribute('src', './images.delete-icon.svg');
-    likeButton.setAttribute('src', './images.like-inactive.svg');
 
     deleteButton.addEventListener('click', deleteCallback);
 
