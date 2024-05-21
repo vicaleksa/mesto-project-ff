@@ -1,3 +1,5 @@
+import {initialCards} from './cards.js';
+
 function createCard(card, deleteCallback) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -16,11 +18,14 @@ function createCard(card, deleteCallback) {
 
 const cardList = document.querySelector('.places__list');
 
-initialCards.forEach(function(card) {
-    const cardElement = createCard(card, deleteCard);
-    cardList.append(cardElement);
-});
+export function createCards() {
+    initialCards.forEach(function(card) {
+        const cardElement = createCard(card, deleteCard);
+        cardList.append(cardElement);
+    });
+};
 
 function deleteCard(event) {
     event.target.parentElement.remove();
 };
+
