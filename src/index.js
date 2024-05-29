@@ -2,11 +2,11 @@ import './index.css';
 import '../vendor/fonts.css';
 import '../vendor/normalize.css';
 
-import {createCards, addCardToList} from './components/card.js';
-import {addClassToModal, closeModal, closeModalOnEscape} from './components/modal.js';
+import {initialCards} from './components/cards.js';
+import {createCard, deleteCard, likeCard} from './components/card.js';
+import {openModal, closeModal, closeModalByClick, closeModalOnEscape} from './components/modal.js';
 
-createCards();
-
+const cardList = document.querySelector('.places__list');
 const profileEditModal = document.querySelector('.popup_type_edit');
 const newCardModal = document.querySelector('.popup_type_new-card');
 const profileEditButton = document.querySelector('.profile__edit-button');
@@ -21,26 +21,55 @@ const profileDescription = document.querySelector('.profile__description');
 const placeName = document.querySelector('.popup__input_type_card-name');
 const placeLink = document.querySelector('.popup__input_type_url');
 
-profileEditButton.addEventListener('click', openModal);
-newCardButton.addEventListener('click', openModal);
-profileEditModal.addEventListener('click', closeModal);
-newCardModal.addEventListener('click', closeModal);
-imageModal.addEventListener('click', closeModal);
-window.addEventListener('keydown', closeModalOnEscape);
+createCards();
+
+profileEditButton.addEventListener('click', handleOpenModal);
+newCardButton.addEventListener('click', handleOpenModal);
+profileEditModal.addEventListener('click', closeModalByClick);
+newCardModal.addEventListener('click', closeModalByClick);
+imageModal.addEventListener('click', closeModalByClick);
 editProfileForm.addEventListener('submit', handleEditFormSubmit);
 newCardForm.addEventListener('submit', handleCardFormSubmit);
 
-function openModal(evt) {
-    nameInput.value = profileName.textContent;
-    descriptionInput.value = profileDescription.textContent;
+function createCards() {
+    initialCards.forEach(function(card) {
+        const cardElement = createCard(card, deleteCard, likeCard, openImage);
+        cardList.append(cardElement);
+    });
+};
+
+function addCardToList(name, link) {
+    const card = createCard({name, link}, deleteCard, likeCard, openImage);
+    cardList.prepend(card);
+};
+
+function handleOpenModal(evt) {
+    window.addEventListener('keydown', closeModalOnEscape);
     switch(evt.target) {
         case profileEditButton:
-            addClassToModal(profileEditModal);
+            nameInput.value = profileName.textContent;
+            descriptionInput.value = profileDescription.textContent;
+            openModal(profileEditModal);
             break;
         case newCardButton:
-            addClassToModal(newCardModal);
+            openModal(newCardModal);
             break;
     }
+};
+
+function openImage(evt) {
+    const imageModal = document.querySelector('.popup_type_image');
+    const popupImage = document.querySelector('.popup__image');
+    const popupCaption = document.querySelector('.popup__caption');
+    const cardImage = evt.target.getAttribute('src');
+    const cardCaption = evt.target.getAttribute('alt');
+    window.addEventListener('keydown', closeModalOnEscape);
+
+    openModal(imageModal);
+
+    popupImage.setAttribute('src', cardImage);
+    popupImage.setAttribute('alt', cardCaption);
+    popupCaption.textContent = cardCaption;
 };
 
 function handleEditFormSubmit(evt) {
@@ -49,8 +78,7 @@ function handleEditFormSubmit(evt) {
     profileName.textContent = nameInput.value;
     profileDescription.textContent = descriptionInput.value;
 
-    const popupElement = document.querySelector('.popup_is-opened');
-    popupElement.classList.remove('popup_is-opened');
+    closeModal(profileEditModal);
 };
 
 function handleCardFormSubmit(evt) {
@@ -58,7 +86,6 @@ function handleCardFormSubmit(evt) {
 
     addCardToList(placeName.value, placeLink.value);
 
-    const popupElement = document.querySelector('.popup_is-opened');
-    popupElement.classList.remove('popup_is-opened');
+    closeModal(newCardModal);
     newCardForm.reset();
 };
