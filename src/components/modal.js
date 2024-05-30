@@ -11,7 +11,7 @@ export function closeModal(popup) {
 
 export function closeModalByClick(evt) {
     if (evt.target.classList.contains('popup__close') || evt.target.classList.contains('popup_is-opened')) {
-        evt.currentTarget.classList.remove('popup_is-opened');
+        closeModal(evt.currentTarget);
     }
 };
 
