@@ -5,6 +5,7 @@ import '../vendor/normalize.css';
 import {initialCards} from './components/cards.js';
 import {createCard, deleteCard, likeCard} from './components/card.js';
 import {openModal, closeModal, closeModalByClick, closeModalOnEscape} from './components/modal.js';
+import {enableValidation} from './components/validation.js';
 
 const cardList = document.querySelector('.places__list');
 const profileEditModal = document.querySelector('.popup_type_edit');
@@ -89,3 +90,12 @@ function handleCardFormSubmit(evt) {
     closeModal(newCardModal);
     newCardForm.reset();
 };
+
+enableValidation({
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+});
